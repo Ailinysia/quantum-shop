@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Register — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <a href="{{ url_for('index') }}" class="back-btn">← Back</a>
+  <h1 class="page-title">Create Account</h1>
+</div>
+
+<div class="login-card">
+  <form method="POST" action="{{ url_for('register') }}" class="form">
+    <div class="form-group">
+      <label class="form-label">Full name</label>
+      <input class="form-input" type="text" name="name" placeholder="Aibek Seitkali" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" name="email" placeholder="you@school.kz" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" type="password" name="password" placeholder="••••••••" required minlength="6" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Grade</label>
+        <select class="form-input" name="grade">
+          {% for g in range(1, 12) %}
+          <option value="{{ g }}">{{ g }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Class</label>
+        <select class="form-input" name="class">
+          {% for c in ['A','B','C','D','E','F','G','H'] %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <button class="btn btn--primary btn--full" type="submit">Create account</button>
+  </form>
+  <p class="login-link">Already have an account? <a href="{{ url_for('index') }}">Log in</a></p>
+</div>
+{% endblock %}

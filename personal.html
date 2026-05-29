@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Personal — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <a href="{{ url_for('dashboard') }}" class="back-btn">← Back</a>
+  <h1 class="page-title">Personal Page</h1>
+</div>
+
+<div class="student-name">{{ session.user_name | upper }}</div>
+
+<!-- Booked lessons grid -->
+<section class="section">
+  <h2 class="section-title">My lessons</h2>
+  {% if bookings %}
+  <div class="bookings-grid">
+    {% for b in bookings %}
+    <div class="booking-card">
+      <div class="booking-color-bar" style="background:{{ b.color }};"></div>
+      <div class="booking-body">
+        <div class="booking-subject">{{ b.subject_name }}</div>
+        <div class="booking-teacher">{{ b.teacher_name }}</div>
+        <div class="booking-meta">{{ b.date }}<br>{{ b.time }}</div>
+        <span class="type-badge type-badge--{{ b.type }}">{{ b.type }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-msg">No lessons booked yet. <a href="{{ url_for('lessons_online') }}">Browse lessons →</a></p>
+  {% endif %}
+</section>
+
+<!-- Grade table -->
+<section class="section">
+  <h2 class="section-title">Grade table</h2>
+  <div class="grade-table-wrap">
+    <table class="grade-table">
+      <thead>
+        <tr>
+          <th>Grade</th>
+          <th>Classes</th>
+          <th>Subjects</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for grade, classes, subjects in grade_table %}
+        <tr>
+          <td>{{ grade }}</td>
+          <td>{{ classes }}</td>
+          <td class="subjects-cell">{{ subjects }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

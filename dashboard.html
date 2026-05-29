@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header-centered">
+  <h1 class="page-title">Main page</h1>
+</div>
+
+<nav class="nav-grid">
+  <a href="{{ url_for('personal') }}"       class="nav-btn">SCHEDULE</a>
+  <a href="{{ url_for('shop') }}"           class="nav-btn">SHOP</a>
+  <a href="{{ url_for('lessons_online') }}" class="nav-btn">ONLINE LESSONS</a>
+  <a href="{{ url_for('events') }}"         class="nav-btn">EVENTS</a>
+  <a href="{{ url_for('lessons_offline') }}" class="nav-btn">OFFLINE LESSONS</a>
+  <a href="{{ url_for('lessons_offline') }}" class="nav-btn">OFFLINE LESSONS</a>
+  <a href="{{ url_for('lessons_online') }}" class="nav-btn">ONLINE LESSONS</a>
+  <a href="{{ url_for('lessons_online') }}" class="nav-btn">ONLINE LESSONS</a>
+  <a href="{{ url_for('lessons_offline') }}" class="nav-btn">OFFLINE LESSONS</a>
+  <a href="{{ url_for('lessons_offline') }}" class="nav-btn">OFFLINE LESSONS</a>
+  <a href="{{ url_for('lessons_online') }}" class="nav-btn">ONLINE LESSONS</a>
+  <a href="{{ url_for('lessons_online') }}" class="nav-btn">ONLINE LESSONS</a>
+</nav>
+
+{% if upcoming %}
+<section class="upcoming-section">
+  <h2 class="section-title">Upcoming lessons</h2>
+  <div class="upcoming-list">
+    {% for b in upcoming %}
+    <div class="upcoming-card" style="border-left: 4px solid {{ b.color }};">
+      <div class="upcoming-subject">{{ b.subject_name }}</div>
+      <div class="upcoming-meta">{{ b.date }} · {{ b.time }} · <span class="type-badge type-badge--{{ b.type }}">{{ b.type }}</span></div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

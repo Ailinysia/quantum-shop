@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Events — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header-centered">
+  <h1 class="page-title">EVENTS</h1>
+</div>
+
+<div class="events-list">
+  {% if events %}
+  {% for e in events %}
+  <div class="event-card">
+    <div class="event-date-block">
+      <span class="event-date">{{ e.date }}</span>
+      <span class="event-time">{{ e.time }}</span>
+    </div>
+    <div class="event-body">
+      <div class="event-title">{{ e.title }}</div>
+      <div class="event-desc">{{ e.description }}</div>
+      <button class="btn btn--event-register">Register →</button>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="empty-msg">No upcoming events.</p>
+  {% endif %}
+</div>
+{% endblock %}

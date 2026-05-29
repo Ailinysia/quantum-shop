@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>{% block title %}QuantumStudy{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="phone-frame">
+
+    {% if session.user_id %}
+    <header class="site-header">
+      <a href="{{ url_for('dashboard') }}" class="header-logo">QuantumStudy</a>
+      <a href="{{ url_for('logout') }}" class="header-logout">Log out</a>
+    </header>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for cat, msg in messages %}
+            <div class="flash flash--{{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <span>https://quantum.study.com</span>
+    </footer>
+
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}{{ subject.name }} — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <a href="{{ url_for('lessons_online') if lesson_type == 'online' else url_for('lessons_offline') }}" class="back-btn">← Back</a>
+</div>
+
+<div class="subject-page-hero" style="background:{{ subject.color }};">
+  <h1 class="subject-page-title {% if subject.dark %}dark-text{% endif %}">{{ subject.name | upper }}</h1>
+</div>
+
+<!-- Booking form -->
+<form method="POST" action="{{ url_for('book_lesson', subject_slug=subject_slug) }}" class="booking-form">
+  <input type="hidden" name="lesson_type" value="{{ lesson_type }}" />
+
+  <div class="booking-section-label">Select Teacher</div>
+  <div class="teacher-chips" id="teacher-chips">
+    {% for t in teachers %}
+    <label class="teacher-chip">
+      <input type="radio" name="teacher_id" value="{{ t.id }}" {% if loop.first %}checked{% endif %} />
+      <span>{{ t.name }}</span>
+    </label>
+    {% endfor %}
+  </div>
+
+  <div class="booking-section-label">Select date &amp; time</div>
+  <div class="date-row">
+    <select class="picker-select" name="date_day">
+      {% for d in range(1, 32) %}
+      <option value="{{ d }}" {% if d == 17 %}selected{% endif %}>{{ d }}</option>
+      {% endfor %}
+    </select>
+    <select class="picker-select" name="date_month">
+      {% for m in ['January','February','March','April','May','June','July','August','September','October','November','December'] %}
+      <option value="{{ m }}" {% if m == 'April' %}selected{% endif %}>{{ m }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="time-row">
+    <div class="spinner-group">
+      <button type="button" class="spinner-btn" data-target="time_hour" data-min="0" data-max="23" data-dir="-1">−</button>
+      <input class="spinner-input" type="number" name="time_hour" id="time_hour" value="16" min="0" max="23" />
+      <button type="button" class="spinner-btn" data-target="time_hour" data-min="0" data-max="23" data-dir="1">+</button>
+    </div>
+    <span class="time-colon">:</span>
+    <div class="spinner-group">
+      <button type="button" class="spinner-btn" data-target="time_minute" data-min="0" data-max="55" data-step="5" data-dir="-1">−</button>
+      <input class="spinner-input" type="number" name="time_minute" id="time_minute" value="0" min="0" max="55" step="5" />
+      <button type="button" class="spinner-btn" data-target="time_minute" data-min="0" data-max="55" data-step="5" data-dir="1">+</button>
+    </div>
+  </div>
+
+  <button class="btn btn--primary btn--full booking-submit" type="submit">Confirm booking</button>
+</form>
+
+<!-- AI Tutor Section -->
+<div class="ai-section">
+  <div class="ai-section-divider">
+    <span>── AI TUTOR ──</span>
+  </div>
+  <h2 class="ai-title">Ask AI Tutor</h2>
+  <p class="ai-subtitle">Powered by Gemini · {{ subject.name }} specialist</p>
+
+  <div class="chat-window" id="chat-window">
+    {% if not chat_history %}
+    <div class="chat-empty">Ask me anything about {{ subject.name }}!</div>
+    {% endif %}
+    {% for msg in chat_history %}
+    <div class="chat-bubble chat-bubble--{{ msg.role }}">
+      <div class="bubble-text">{{ msg.content }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" type="text"
+           placeholder="Ask about {{ subject.name }}…" autocomplete="off" />
+    <button class="btn btn--send" id="send-btn" type="button">Send</button>
+  </div>
+  <div class="chat-typing" id="chat-typing" style="display:none;">AI is thinking…</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const SUBJECT = {{ subject.name | tojson }};
+const chatWindow = document.getElementById('chat-window');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const typingEl = document.getElementById('chat-typing');
+
+function appendBubble(role, text) {
+  const empty = chatWindow.querySelector('.chat-empty');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = `chat-bubble chat-bubble--${role}`;
+  div.innerHTML = `<div class="bubble-text">${text.replace(/\n/g, '<br>')}</div>`;
+  chatWindow.appendChild(div);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+async function sendMessage() {
+  const question = chatInput.value.trim();
+  if (!question) return;
+
+  chatInput.value = '';
+  appendBubble('user', question);
+  typingEl.style.display = 'block';
+  sendBtn.disabled = true;
+
+  try {
+    const res = await fetch('/ai/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subject: SUBJECT, question })
+    });
+    const data = await res.json();
+    appendBubble('assistant', data.answer || 'No response.');
+  } catch (e) {
+    appendBubble('assistant', 'Network error. Please try again.');
+  } finally {
+    typingEl.style.display = 'none';
+    sendBtn.disabled = false;
+  }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+// Scroll to bottom on load
+chatWindow.scrollTop = chatWindow.scrollHeight;
+</script>
+{% endblock %}

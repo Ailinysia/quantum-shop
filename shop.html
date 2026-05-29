@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Shop — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header-centered">
+  <h1 class="page-title">SHOP</h1>
+</div>
+
+<div class="shop-filters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="boys">Boys wear</button>
+  <button class="filter-btn" data-filter="girls">Girls wear</button>
+</div>
+
+<!-- Boys section -->
+<section class="shop-section" id="section-boys">
+  <div class="shop-grid">
+    {% for p in boys %}
+    <div class="product-card" data-category="boys">
+      <div class="product-img">
+        {% if p.image_path %}
+        <img src="{{ p.image_path }}" alt="{{ p.name }}" />
+        {% endif %}
+        <span class="product-category-label">Boys wear</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">{{ p.name }}</div>
+        <div class="product-price">₸{{ p.price | int }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Girls section -->
+<section class="shop-section" id="section-girls">
+  <div class="shop-grid">
+    {% for p in girls %}
+    <div class="product-card" data-category="girls">
+      <div class="product-img">
+        {% if p.image_path %}
+        <img src="{{ p.image_path }}" alt="{{ p.name }}" />
+        {% endif %}
+        <span class="product-category-label">Girls wear</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">{{ p.name }}</div>
+        <div class="product-price">₸{{ p.price | int }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

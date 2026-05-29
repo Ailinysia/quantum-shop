@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson_type | title }} Lessons — QuantumStudy{% endblock %}
+
+{% block content %}
+<div class="page-header-centered">
+  <h1 class="page-title">{{ lesson_type | upper }} LESSONS</h1>
+</div>
+
+<div class="subject-grid">
+  {% for s in subjects %}
+  {% if s.name %}
+  <a href="{{ url_for('subject_page', subject_slug=s.name.lower().replace(' ', '-')) }}?type={{ lesson_type }}"
+     class="subject-tile {% if s.dark %}subject-tile--dark{% endif %}"
+     style="background-color: {{ s.color }};">
+    {{ s.name }}
+  </a>
+  {% else %}
+  <div class="subject-tile subject-tile--empty"></div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
